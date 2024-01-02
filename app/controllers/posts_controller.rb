@@ -17,8 +17,7 @@ class PostsController < ApplicationController
     @comments = @post.postcomments.includes(:user)
     @comment_likes_counts = {}
 
-    # Iterate through each comment and get the like counts for that comment
-    @comments.each do |comment|
+     @comments.each do |comment|
       @comment_likes_counts[comment.id] = comment.likes.count
     end
     

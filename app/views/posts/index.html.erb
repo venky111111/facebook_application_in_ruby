@@ -101,8 +101,6 @@
     .likes-section {
       margin-top: 10px;
     }
-
-    
   </style>
 </head>
 <body>
@@ -138,7 +136,10 @@
 
             <%= link_to 'View Post', post_path(post), class: 'view-post-link' %>
             <%= link_to 'Like Post', post_likes_path(post), method: :post, class: 'btn btn-primary view-post-link' %>
-           
+            <% if post.user == current_user %>
+
+              <%= link_to "Delete post", post_path(post), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"},class: 'view-post-link' %>
+            <% end %>
             
           </div>
           <div class="likes-section">     
