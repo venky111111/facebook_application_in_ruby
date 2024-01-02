@@ -46,7 +46,8 @@
 
     .sign-in-button,
     .sign-out-button,
-    .view-post-link {
+    .view-post-link,
+    .btn-primary {
       display: inline-block;
       padding: 10px 20px;
       margin: 10px;
@@ -57,8 +58,9 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    .view-post-link:hover, .sign-in-button:hover {
+    .view-post-link:hover, .sign-in-button:hover, .btn-primary:hover {
       background-color: #2980b9;
+      color: #fff;
     }
 
     .post-container {
@@ -123,31 +125,33 @@
   
   <div class="user-section">
     <% if user_signed_in? %>
-      <h1>Welcome Home, <%= current_user.name %></h1>
-      <h2>All Posts</h2>
+      <h1 style="color: #4267B2;">Welcome, <%= current_user.name %></h1>
+      <h2 style="color: #555;">Explore All Posts</h2>
       <%= link_to 'Create New Post', new_post_path, class: 'sign-in-button' %>
       <div class="post-container">
         <% @posts.each do |post| %>
           <div class="post">
             <h3><%= post.user.name %></h3>
             <p><%= post.content %></p>
-            <h3>Comments ( <%= @comment_counts[post.id] || 0 %> ):</h3>
-            <h3>Likes ( <%= @likes_counts[post.id] || 0 %> ):</h3>
+            <h3 style="color: #555;">Comments ( <%= @comment_counts[post.id] || 0 %> ):</h3>
+            <h3 style="color: #555;">Likes ( <%= @likes_counts[post.id] || 0 %> ):</h3>
 
             <%= link_to 'View Post', post_path(post), class: 'view-post-link' %>
-            <%= link_to 'Like Post', post_likes_path(post), method: :post, class: 'btn btn-primary view-post-link' %>
-            <% if post.user == current_user %>
-
-              <%= link_to "Delete post", post_path(post), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"},class: 'view-post-link' %>
-            <% end %>
-            
+            <% if post.likes.exists?(user: current_user) %>
+            <%= link_to 'Unlike Post', post_likes_path(post), method: :post, class: 'btn-primary view-post-link' %>
+          <% else %>
+            <%= link_to 'Like Post', post_likes_path(post), method: :post, class: 'btn-primary view-post-link' %>
+          <% end %>      
+          <% if post.user == current_user %>
+            <%= link_to "Delete", post_path(post), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"}, class: 'btn-primary view-post-link' %>
+          <% end %>
           </div>
           <div class="likes-section">     
          </div>
         <% end %>
       </div>
     <% else %>
-      <h1>Home Login</h1>
+      <h1 style="color: #4267B2;">Home Login</h1>
       <%= link_to 'Sign in', new_user_session_path, class: 'sign-in-button' %>
     <% end %>
   </div>

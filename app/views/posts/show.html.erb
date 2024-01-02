@@ -95,11 +95,16 @@
         <div class="comment">
           <p><strong><%= comment.user.name %>:</strong> <%= comment.content %></p>
           <p><strong>Likes ( <%= @comment_likes_counts[comment.id] || 0 %> )</strong></p>
+      
+          <% if comment.likes.exists?(user: current_user) %>
+              <%= link_to 'Unike Comment', postcomment_likes_path(comment), method: :post, class: 'btn btn-primary' %>
+          <% else %>
             <%= link_to 'Like Comment', postcomment_likes_path(comment), method: :post, class: 'btn btn-primary' %>
-         
+          <% end %>
+      
         </div>
       <% end %>
-    </div>
+      
 
     
 
