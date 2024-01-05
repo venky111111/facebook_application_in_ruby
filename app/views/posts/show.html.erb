@@ -17,7 +17,7 @@
     }
 
     .container {
-      max-width: 600px;
+      min-width: 600px;
       padding: 20px;
       background-color: #fff;
       border-radius: 8px;
@@ -97,9 +97,9 @@
           <p><strong>Likes ( <%= @comment_likes_counts[comment.id] || 0 %> )</strong></p>
       
           <% if comment.likes.exists?(user: current_user) %>
-              <%= link_to 'Unike Comment', postcomment_likes_path(comment), method: :post, class: 'btn btn-primary' %>
+              <%= link_to 'Unike Comment', likes_path(postcomment_id: comment.id), method: :post, class: 'btn btn-primary' %>
           <% else %>
-            <%= link_to 'Like Comment', postcomment_likes_path(comment), method: :post, class: 'btn btn-primary' %>
+            <%= link_to 'Like Comment', likes_path(postcomment_id: comment.id), method: :post, class: 'btn btn-primary' %>
           <% end %>
       
         </div>
@@ -110,7 +110,20 @@
 
 
   </div>
-    <%= render 'postcomments/form', post: @post %>
+  
+  <%= form_with(model: [@post, @comment], url: postcomments_path, local: true) do |form| %>
+    <%= form.hidden_field :post_id, value: @post.id %>
+
+    <div>
+      <%= form.label :content %><br>
+      <%= form.text_area :content, rows: 3 %>
+    </div>
+  
+    <div class="buttons">
+      <%= form.submit "Add Comment", class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+  
     <%= link_to 'Back to Home', posts_path, class: 'btn btn-primary back-btn' %>
   
 </body>

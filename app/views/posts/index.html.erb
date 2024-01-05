@@ -129,7 +129,7 @@
       <h2 style="color: #555;">Explore All Posts</h2>
       <%= link_to 'Create New Post', new_post_path, class: 'sign-in-button' %>
       <div class="post-container">
-        <% @posts.each do |post| %>
+          <% @posts.each do |post| %>
           <div class="post">
             <h3><%= post.user.name %></h3>
             <p><%= post.content %></p>
@@ -138,9 +138,11 @@
 
             <%= link_to 'View Post', post_path(post), class: 'view-post-link' %>
             <% if post.likes.exists?(user: current_user) %>
-            <%= link_to 'Unlike Post', post_likes_path(post), method: :post, class: 'btn-primary view-post-link' %>
+            <%= link_to 'Unlike Post', likes_path(post_id: post.id), method: :destroy, class: 'btn-primary view-post-link' %>
           <% else %>
-            <%= link_to 'Like Post', post_likes_path(post), method: :post, class: 'btn-primary view-post-link' %>
+
+            <%= link_to 'Like Post', likes_path(post_id: post.id), method: :create, class: 'btn-primary view-post-link' %>
+           
           <% end %>      
           <% if post.user == current_user %>
             <%= link_to "Delete", post_path(post), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"}, class: 'btn-primary view-post-link' %>

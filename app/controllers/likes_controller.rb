@@ -1,8 +1,8 @@
 class LikesController < ApplicationController
-  before_action :authenticate_user!
-  before_action :set_post, only: [:index]
+  before_action :set_post
  
-
+ 
+ 
   def index
 
     if (@post.present? && @post.likes.exists?(user: current_user)) || (@postcomment.present? && @postcomment.likes.exists?(user: current_user))
@@ -10,16 +10,16 @@ class LikesController < ApplicationController
     else
       create
     end
-    
-
   end
 
   def create
+   
     if params[:post_id]
       like_post
-    elsif params[:postcomment_id]
+    elsif  params[:postcomment_id]
       like_comment
     else
+      
       redirect_back fallback_location: root_path, alert: 'Invalid like request.'
     end
   end
@@ -34,29 +34,42 @@ class LikesController < ApplicationController
       redirect_back fallback_location: root_path, alert: 'Invalid unlike request.'
     end
   end
+
+  private
+
   def set_post
-    if params[:post_id].present?
+    if params[:post_id]
       @post = Post.find_by(id: params[:post_id])
       @postcomment = nil
-    elsif params[:postcomment_id].present?
+    elsif params[:postcomment_id]
       @postcomment = Postcomment.find_by(id: params[:postcomment_id])
       @post = nil
     else
       @post = nil
       @postcomment = nil
+      redirect_back fallback_location: root_path, alert: 'Invalid parameters.'
+      return
+    end
+  
+    unless @post || @postcomment
+      redirect_back fallback_location: root_path, alert: 'Post or Postcomment not found.'
     end
   end
   
-  private
+
+  
 
   def like_post
-    @post = Post.find(params[:post_id])
-    if @post.likes.exists?(user: current_user)
-      redirect_to posts_path(@post), alert: 'You have already liked this post.'
-    else
+      @post = Post.find(params[:post_id])
       @like = @post.likes.create(user: current_user)
-      redirect_to posts_path(@post), notice: 'Post liked successfully'
-    end
+
+      if @like.persisted?
+        
+        redirect_to posts_path(@post), notice: 'Post liked successfully'
+      else
+       
+        redirect_to posts_path(@post), notice: 'Failed to create like'
+      end
   end
 
   def unlike_post
@@ -73,7 +86,13 @@ class LikesController < ApplicationController
   def like_comment
     @comment = Postcomment.find(params[:postcomment_id])
       @like = @comment.likes.create(user: current_user)
-      redirect_to post_path(@comment.post), notice: 'Comment liked successfully'
+      if @like.persisted?
+        
+        redirect_to post_path(@comment.post), notice: 'Comment liked successfully'
+      else
+       
+        redirect_to post_path(@comment.post), notice: 'Failed to create like'
+      end
     
   end
 

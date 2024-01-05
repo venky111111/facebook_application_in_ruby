@@ -13,14 +13,13 @@ class PostsController < ApplicationController
   end
   def show
     @post = Post.find(params[:id])
-   
     @comments = @post.postcomments.includes(:user)
-    @comment_likes_counts = {}
+    @comment = Postcomment.new 
 
-     @comments.each do |comment|
+    @comment_likes_counts = {}
+    @comments.each do |comment|
       @comment_likes_counts[comment.id] = comment.likes.count
     end
-    
   end
   def destroy
     @post = Post.find(params[:id])
